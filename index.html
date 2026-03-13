@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Распознавание фильмов по кадру</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Кино-Скан AI</h1>
+        <p>Сфотографируй экран или загрузи скриншот кадра из фильма</p>
+
+        <div class="media-controls">
+            <button id="start-camera">Включить камеру</button>
+            <button id="take-photo" style="display: none;">Сделать фото</button>
+            
+            <label for="file-upload" class="custom-file-upload">
+                Загрузить скриншот
+            </label>
+            <input id="file-upload" type="file" accept="image/*">
+        </div>
+
+        <div class="view-area">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+            <img id="preview" src="" alt="Превью" style="display: none;">
+        </div>
+
+        <div id="result-box" class="hidden">
+            <h2>Результат:</h2>
+            <p id="movie-title">Анализируем кадр...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
