@@ -1,3 +1,9 @@
+// === СЮДА ВСТАВЬ ССЫЛКУ ИЗ TEACHABLE MACHINE ===
+const URL = "https://teachablemachine.withgoogle.com/models/ТВОЯ_ССЫЛКА/";
+// ===============================================
+
+let model, maxPredictions;
+
 const startCameraBtn = document.getElementById('start-camera');
 const takePhotoBtn = document.getElementById('take-photo');
 const fileUpload = document.getElementById('file-upload');
@@ -7,15 +13,30 @@ const preview = document.getElementById('preview');
 const resultBox = document.getElementById('result-box');
 const movieTitle = document.getElementById('movie-title');
 
+// Загружаем нейросеть при открытии страницы
+async function init() {
+    try {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+        console.log("Нейросеть успешно загружена!");
+    } catch (e) {
+        console.error("Ошибка загрузки модели. Проверь ссылку!", e);
+        movieTitle.textContent = "Ошибка загрузки ИИ ❌";
+    }
+}
+init();
+
 // Включение камеры
 startCameraBtn.addEventListener('click', async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         video.srcObject = stream;
-        video.style.display = 'block';
-        preview.style.display = 'none';
-        startCameraBtn.style.display = 'none';
-        takePhotoBtn.style.display = 'inline-block';
+        video.classList.remove('hidden');
+        preview.classList.add('hidden');
+        startCameraBtn.classList.add('hidden');
+        takePhotoBtn.classList.remove('hidden');
     } catch (err) {
         alert('Ошибка доступа к камере: ' + err.message);
     }
@@ -45,35 +66,48 @@ fileUpload.addEventListener('change', (event) => {
 
 // Показ картинки и запуск анализа
 function showPreviewAndAnalyze(imageSrc) {
-    // Останавливаем камеру, если она работала
     if (video.srcObject) {
         video.srcObject.getTracks().forEach(track => track.stop());
     }
-    video.style.display = 'none';
-    takePhotoBtn.style.display = 'none';
-    startCameraBtn.style.display = 'inline-block';
+    video.classList.add('hidden');
+    takePhotoBtn.classList.add('hidden');
+    startCameraBtn.classList.remove('hidden');
     
     preview.src = imageSrc;
-    preview.style.display = 'block';
-    
+    preview.classList.remove('hidden');
     resultBox.classList.remove('hidden');
-    movieTitle.textContent = "Анализируем кадр...";
-    movieTitle.style.color = "#a3a3a3";
+    
+    movieTitle.textContent = "Анализируем кадр ⏳...";
+    movieTitle.style.color = "#a0a0a0";
 
-    // Сюда нужно подключить реальный API (Teachable Machine, Google Vision и т.д.)
-    analyzeImage(imageSrc);
+    // Ждем, пока картинка прогрузится в тег img, затем отдаем ИИ
+    preview.onload = () => {
+        predictImage();
+    }
 }
 
-// Функция-заглушка для ИИ
-function analyzeImage(base64Image) {
-    // Имитация задержки сети/обработки (2 секунды)
-    setTimeout(() => {
-        // В реальном проекте здесь будет ответ от нейросети.
-        // Пока выводим случайный результат для теста.
-        const mockMovies = ["Матрица (1999)", "Интерстеллар (2014)", "Бойцовский клуб (1999)"];
-        const randomMovie = mockMovies[Math.floor(Math.random() * mockMovies.length)];
-        
-        movieTitle.textContent = randomMovie;
-        movieTitle.style.color = "#00ff00";
-    }, 2000);
+// Настоящий анализ через ИИ
+async function predictImage() {
+    if (!model) {
+        movieTitle.textContent = "Модель еще не загрузилась!";
+        return;
+    }
+
+    // ИИ делает предсказание
+    const prediction = await model.predict(preview);
+    
+    // Сортируем результаты от самого вероятного к наименее вероятному
+    prediction.sort((a, b) => b.probability - a.probability);
+    
+    const bestMatch = prediction[0]; // Берем лучший результат
+    const confidence = Math.round(bestMatch.probability * 100); // Переводим в проценты
+
+    // Если ИИ уверен больше чем на 60%
+    if (confidence > 60) {
+        movieTitle.textContent = `${bestMatch.className} (${confidence}%)`;
+        movieTitle.style.color = "#64b5f6";
+    } else {
+        movieTitle.textContent = "Не могу узнать фильм 🤔";
+        movieTitle.style.color = "#ff5252"; // Красный цвет ошибки
+    }
 }
