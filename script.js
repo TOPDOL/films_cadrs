@@ -1,5 +1,5 @@
 // === СЮДА ВСТАВЬ ССЫЛКУ ИЗ TEACHABLE MACHINE ===
-const URL = "https://teachablemachine.withgoogle.com/models/ТВОЯ_ССЫЛКА/";
+const URL = "https://teachablemachine.withgoogle.com/models/DMv955vy_/";
 // ===============================================
 
 let model, maxPredictions;
