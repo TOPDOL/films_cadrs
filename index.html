@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Распознавание фильмов по кадру</title>
+    <title>Кино-Скан AI | Распознавание фильмов</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,12 +30,24 @@
         <div id="result-box" class="hidden">
             <h2>Результат:</h2>
             <p id="movie-title">Загрузка нейросети...</p>
+            
+            <div id="feedback-section" class="hidden" style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p style="color: #a0a0a0; font-size: 14px; margin-bottom: 10px;">ИИ ошибся или не узнал кадр?</p>
+                <input type="text" id="correct-movie" placeholder="Напиши правильное название..." style="padding: 10px; border-radius: 8px; border: none; width: 100%; margin-bottom: 10px; background: rgba(255,255,255,0.1); color: #fff; outline: none;">
+                <button id="submit-feedback" style="padding: 8px 16px; font-size: 14px; width: 100%;">Отправить правильный ответ</button>
+                <p id="feedback-message" style="color: #00e676; font-size: 14px; display: none; margin-top: 10px;"></p>
+            </div>
         </div>
+
+        <footer style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+            <p style="color: #fff; font-weight: bold; margin-bottom: 5px;">Разработчик: Торобеков Аслан</p>
+            <p style="color: #a0a0a0; font-size: 13px; margin-bottom: 5px;">Школа №70, класс 7М</p>
+            <p style="color: #a0a0a0; font-size: 13px; margin-bottom: 0;">Контакты: doltop94@gmail.com | 0555790606</p>
+        </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    
     <script src="script.js"></script>
 </body>
 </html>
